@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:studyai_flutter_v2/resusable_components/text_field_custom.dart';
@@ -153,8 +154,18 @@ class _BottomSendChatState extends State<BottomSendChat> {
     }
   }
 
-  void GetResponse(BuildContext context, Message question)
-  {
-    
-  }
+Future<void> GetResponse(BuildContext context, Message question) async {
+  String apiKey = "";
+    await FirebaseFirestore.instance
+        .collection("data")
+        .doc("backend")
+        .get()
+        .then((value) {
+      setState(() {
+        apiKey = value.data()!['apiKey'];
+      });
+    });
+  // do something with the apiKey string variable
+  print('API Key: $apiKey');
+}
 }

@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:studyai_flutter_v2/homePage.dart';
 import 'package:studyai_flutter_v2/themes/theme_provider.dart';
 import 'package:studyai_flutter_v2/welcomePage.dart';
-
-void main() {
-
+import 'package:firebase_core/firebase_core.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(ChangeNotifierProvider(create: ((context) => ThemeProvider()
     ), child: MyApp(),)
     );
