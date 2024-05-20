@@ -7,7 +7,7 @@ import 'package:studyai_flutter_v2/resusable_components/top_elements.dart';
 class ConversationPage extends StatefulWidget {
   ConversationPage({super.key, required this.questionInput, required this.autoSendMessage, required this.currentConversation});
 
-  Conversation currentConversation = Conversation(messages: []);
+  Conversation currentConversation;
 
   @override
   // ignore: no_logic_in_create_state
@@ -26,8 +26,6 @@ class _ConversationPageState extends State<ConversationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("Qurestion Input: " + questionInput);
-    print("Auto Send Message: " + autoSendMessage.toString());
   }
 
   @override
@@ -56,7 +54,7 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
- void updateConversation(Message newMessage)
+ void updateConversation(ChatMessage newMessage)
   {
       setState(() {
         currentConversation.messages.add(newMessage);

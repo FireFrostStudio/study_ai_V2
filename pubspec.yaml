@@ -43,6 +43,10 @@ dependencies:
   firebase_analytics: ^10.8.0
   firebase_database: ^10.4.0
   cloud_firestore: ^4.14.0
+  anthropic_dart: ^1.0.1
+  http: ^1.2.1
+  shared_preferences: ^2.2.3
+  purchases_flutter: ^6.29.1
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +83,7 @@ flutter:
     - assets/icons/pencil_icon.png
     - assets/icons/right_arrow_icon.png
     - assets/icons/camera_icon.png
+    - assets/icons/crown_icon.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

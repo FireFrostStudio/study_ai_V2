@@ -19,7 +19,7 @@ class _ConversationTextBuilderState extends State<ConversationTextBuilder> {
       children: widget.currentConversation!.messages.map((message) {
         return Row(
           children: [
-            message.fromUser? Spacer() : SizedBox(),
+            // message.fromUser? Spacer() : SizedBox(),
             Expanded(
               child: Container(
                 alignment: message.fromUser? Alignment.centerRight : Alignment.centerLeft,
@@ -35,11 +35,11 @@ class _ConversationTextBuilderState extends State<ConversationTextBuilder> {
                 child: Text(
                   message.messageContent,
                   textAlign: message.fromUser? TextAlign.right : TextAlign.left,
-                  style: message.fromUser ? TextStyle(color: Colors.white) : TextStyle(),
+                  style: message.fromUser ? TextStyle(color: Colors.white, fontSize: 13) : TextStyle(fontSize: 13),
                 ),
               ),
             ),
-            message.fromUser == false? Spacer() : SizedBox(),
+            // message.fromUser == false? Spacer() : SizedBox(),
           ],
         );
       }).toList(),

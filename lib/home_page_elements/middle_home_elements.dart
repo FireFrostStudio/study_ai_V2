@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:studyai_flutter_v2/conversationPage.dart';
+import 'package:studyai_flutter_v2/getPremiumPage.dart';
 
 import '../data/conversation_data.dart';
 
@@ -26,7 +27,12 @@ class MiddleHomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ConversationPage(autoSendMessage: false, questionInput: "Write me two sentences on the significance of Shakespeare.",currentConversation: Conversation(messages: []),)),
+                        builder: (context) => ConversationPage(
+                              autoSendMessage: false,
+                              questionInput:
+                                  "Write me two sentences on the significance of Shakespeare.",
+                              currentConversation: Conversation(messages: []),
+                            )),
                   );
                 },
               ),
@@ -35,12 +41,17 @@ class MiddleHomePage extends StatelessWidget {
                 iconPath: "assets/icons/math_icon.png",
                 title: "Math Help",
                 description:
-                    "Have complex math or scientific topics? Take a picture and see",
+                    "Need answers to complex topics? Study AI can help.",
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ConversationPage(autoSendMessage: false, questionInput: "Explain to me the function of the cell membrane.", currentConversation: Conversation(messages: []),)),
+                        builder: (context) => ConversationPage(
+                              autoSendMessage: false,
+                              questionInput:
+                                  "Explain to me the function of the cell membrane.",
+                              currentConversation: Conversation(messages: []),
+                            )),
                   );
                 },
               )
@@ -112,19 +123,19 @@ class ExamplePrompt_Widget_HomePage extends StatelessWidget {
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
                 ),
               ),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Spacer(),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Row(
                   children: [
                     Spacer(),
                     ImageIcon(
                       AssetImage("assets/icons/right_arrow_icon.png"),
-                      size: 30,
+                      size: 25,
                     )
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -143,7 +154,7 @@ class Premium_Widget_HomePage extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Container(
         width: double.infinity,
-        height: 225,
+        height: 220,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           gradient: LinearGradient(
@@ -158,7 +169,6 @@ class Premium_Widget_HomePage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(25),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
                 child: Column(
@@ -173,7 +183,13 @@ class Premium_Widget_HomePage extends StatelessWidget {
                         "Send Pictures, get longer responses, and more!"),
                     const Spacer(),
                     GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GetPremiumPage()),
+                          );
+                        },
                         child: Container(
                           height: 35,
                           width: 125,
@@ -189,7 +205,7 @@ class Premium_Widget_HomePage extends StatelessWidget {
                                 ),
                               ],
                               borderRadius: BorderRadius.circular(15)),
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               "Upgrade Now",
                               style: TextStyle(
@@ -201,14 +217,13 @@ class Premium_Widget_HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              Expanded(
-                  child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Image.asset(
-                        "assets/icons/bulb-dynamic-color.png",
-                        fit: BoxFit.contain,
-                      )))
+              SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Image.asset(
+                    "assets/icons/bulb-dynamic-color.png",
+                    fit: BoxFit.contain,
+                  ))
             ],
           ),
         ),

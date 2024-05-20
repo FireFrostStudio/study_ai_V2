@@ -6,6 +6,9 @@ import 'package:studyai_flutter_v2/conversation_page_elements/conversation_text_
 import '../conversationPage.dart';
 import '../data/conversation_data.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:anthropic_dart/anthropic_dart.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class BottomSendChat extends StatefulWidget {
   BottomSendChat(
@@ -14,24 +17,99 @@ class BottomSendChat extends StatefulWidget {
       required this.preEnteredMessage,
       required this.autoSendMessage,
       this.currentConversation,
-      this.onMessageSent});
+      this.onMessageSent,
+      this.conversationIndex});
   final bool isFromHomePage;
   final String preEnteredMessage;
   final bool autoSendMessage;
+  int? conversationIndex;
   Conversation? currentConversation;
-  Function(Message)? onMessageSent;
+  Function(ChatMessage)? onMessageSent;
   @override
   State<BottomSendChat> createState() => _BottomSendChatState();
 }
 
 class _BottomSendChatState extends State<BottomSendChat> {
   final TextEditingController _textEditingController = TextEditingController();
-
+  int? _conversationIndex;
   bool textFieldReadOnly = false;
   @override
   void initState() {
     super.initState();
     _textEditingController.text = widget.preEnteredMessage;
+    _conversationIndex = widget.conversationIndex;
+  }
+
+  Future<void> GetResponse(BuildContext context, ChatMessage question) async {
+    String apiKey = "";
+    const String apiUrl = 'https://api.anthropic.com/v1/messages';
+    final String defaultModel = "claude-3-haiku-20240307";
+    await FirebaseFirestore.instance
+        .collection("data")
+        .doc("backend")
+        .get()
+        .then((value) {
+      setState(() {
+        apiKey = value.data()!['apiKey'];
+      });
+    });
+    final headers = {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      'model': 'claude-3-haiku-20240307',
+      'max_tokens': 256,
+      'system': 'You are an educational assistant called Study AI. Do not every write a quotation mark or include it in an answer.',
+      'messages': [
+        {'role': 'user', 'content': question.messageContent}
+      ]
+    });
+
+    final response =
+        await http.post(Uri.parse(apiUrl), headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      String? output = getTextContent(responseData);
+      widget.onMessageSent!(ChatMessage(
+          fromUser: false, messageContent: output ?? "Error Loading Response"));
+      setState(() {
+        textFieldReadOnly = false;
+      });
+
+      if (_conversationIndex != null) {
+        Data()
+            .pastConversations!
+            .pastConversations[_conversationIndex ?? 0]
+            .messages
+            .add(ChatMessage(
+                fromUser: true, messageContent: question.messageContent));
+        Data()
+            .pastConversations!
+            .pastConversations[_conversationIndex ?? 0]
+            .messages
+            .add(ChatMessage(fromUser: false, messageContent: output ?? " "));
+        
+        Data().savePastData();
+      } else {
+        Data().pastConversations!.pastConversations.add(Conversation(messages: [
+              ChatMessage(
+                  fromUser: true, messageContent: question.messageContent),
+              ChatMessage(fromUser: false, messageContent: output ?? " ")
+            ]));
+        setState(() {
+          _conversationIndex = Data().pastConversations!.pastConversations.length - 1;
+        });
+        Data().savePastData();
+      }
+    } else {
+      // Handle error
+      print("WAS AN ERROR");
+      print(response.body);
+    }
   }
 
   @override
@@ -144,28 +222,27 @@ class _BottomSendChatState extends State<BottomSendChat> {
     if (widget.isFromHomePage == false &&
         _textEditingController.text != "" &&
         widget.onMessageSent != null) {
-      widget.onMessageSent!(
-          Message(fromUser: true, messageContent: _textEditingController.text));
+      widget.onMessageSent!(ChatMessage(
+          fromUser: true, messageContent: _textEditingController.text));
+      GetResponse(
+          context,
+          ChatMessage(
+              fromUser: true, messageContent: _textEditingController.text));
       _textEditingController.clear();
-      GetResponse(context, Message(fromUser: true, messageContent: _textEditingController.text));
       setState(() {
         textFieldReadOnly = true;
       });
     }
   }
 
-Future<void> GetResponse(BuildContext context, Message question) async {
-  String apiKey = "";
-    await FirebaseFirestore.instance
-        .collection("data")
-        .doc("backend")
-        .get()
-        .then((value) {
-      setState(() {
-        apiKey = value.data()!['apiKey'];
-      });
-    });
-  // do something with the apiKey string variable
-  print('API Key: $apiKey');
 }
+
+String? getTextContent(Map<String, dynamic> responseData) {
+  if (responseData['content'] != null && responseData['content'].length > 0) {
+    final content = responseData['content'][0];
+    if (content['type'] == 'text') {
+      return content['text'];
+    }
+  }
+  return null;
 }

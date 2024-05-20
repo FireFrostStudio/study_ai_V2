@@ -11,19 +11,25 @@ class TopHomePage extends StatelessWidget {
     bool isDarkMode =
         Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
-    return Row(
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Row(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: ImageIcon(AssetImage("assets/icons/menu_icon.png")),
+          GestureDetector(
+            onTap: () {
+              Scaffold.of(context).openDrawer();
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: ImageIcon(AssetImage("assets/icons/menu_icon.png")),
+            ),
           ),
           const Spacer(),
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: GestureDetector(
               onTap: () {
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .toggelTheme();
+                Provider.of<ThemeProvider>(context, listen: false).toggelTheme();
               },
               child: Container(
                 width: 45,
@@ -38,6 +44,7 @@ class TopHomePage extends StatelessWidget {
             ),
           )
         ],
-      );
+      ),
+    );
   }
 }
