@@ -47,6 +47,7 @@ dependencies:
   http: ^1.2.1
   shared_preferences: ^2.2.3
   purchases_flutter: ^6.29.1
+  google_mobile_ads: ^5.1.0
 
 dev_dependencies:
   flutter_test:

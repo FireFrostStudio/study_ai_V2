@@ -14,6 +14,8 @@ class Data extends ChangeNotifier {
   PastConversations? pastConversations;
   bool isPremium = false;
 
+  final interstitialAdAndroidID = "ca-app-pub-3940256099942544/1033173712";
+
   Future<void> initalizeSubStatus() async {
     CustomerInfo customerInfo = await Purchases.getCustomerInfo();
     isPremium = customerInfo.entitlements.all["Premium"]?.isActive ?? false;

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:studyai_flutter_v2/data/conversation_data.dart';
@@ -35,6 +36,9 @@ void main() async {
   await Purchases.configure(configuration);
 
   Data().initalizeSubStatus();
+
+
+  await MobileAds.instance.initialize();
 
   runApp(
     MultiProvider(

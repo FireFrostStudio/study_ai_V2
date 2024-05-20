@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:provider/provider.dart';
 import 'package:studyai_flutter_v2/conversationPage.dart';
 import 'package:studyai_flutter_v2/getPremiumPage.dart';
 
@@ -24,6 +25,7 @@ class MiddleHomePage extends StatelessWidget {
                 title: "Writing Articles",
                 description: "Explore our world-class generative models",
                 onTap: () {
+                  Data().initalizeSubStatus();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -43,6 +45,7 @@ class MiddleHomePage extends StatelessWidget {
                 description:
                     "Need answers to complex topics? Study AI can help.",
                 onTap: () {
+                  Data().initalizeSubStatus();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -150,84 +153,115 @@ class Premium_Widget_HomePage extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Container(
-        width: double.infinity,
-        height: 220,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Theme.of(context).colorScheme.primary,
-              Colors.purple.shade200,
-            ],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(25),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Explore Study AI Premium",
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold)),
-                    const Spacer(),
-                    const Text(
-                        "Send Pictures, get longer responses, and more!"),
-                    const Spacer(),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => GetPremiumPage()),
-                          );
-                        },
-                        child: Container(
-                          height: 35,
-                          width: 125,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(
-                                      0, 3), // changes position of shadow
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(15)),
-                          child: const Center(
-                            child: Text(
-                              "Upgrade Now",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ))
-                  ],
+    return Consumer<Data>(
+        builder: (context, value, child) => Padding(
+              padding: const EdgeInsets.all(20),
+              child: Container(
+                width: double.infinity,
+                height: 220,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Colors.purple.shade200,
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            value.isPremium == false
+                                ? const Text("Explore Study AI Premium",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold))
+                                : const Text("Study AI Premium Activated",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold)),
+                            const Spacer(),
+                            value.isPremium == false
+                                ? const Text(
+                                    "Remove ads, get longer responses, and more!")
+                                : const Text(
+                                    "Enjoy longer, more detailed responses, ad free!"),
+                            const Spacer(),
+                            value.isPremium == false
+                                ? GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                GetPremiumPage()),
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 35,
+                                      width: 125,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: Offset(0,
+                                                  3), // changes position of shadow
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: const Center(
+                                        child: Text(
+                                          "Upgrade Now",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ))
+                                : Container(
+                                    width: 125,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: const Center(
+                                      child: Text(
+                                        "Premium Activated",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                  )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Image.asset(
+                            value.isPremium == false ? "assets/icons/bulb-dynamic-color.png" : "assets/icons/crown_icon.png",
+                            fit: BoxFit.contain,
+                          ))
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: Image.asset(
-                    "assets/icons/bulb-dynamic-color.png",
-                    fit: BoxFit.contain,
-                  ))
-            ],
-          ),
-        ),
-      ),
-    );
+            ));
   }
 }

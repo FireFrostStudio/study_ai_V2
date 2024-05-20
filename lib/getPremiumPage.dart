@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:studyai_flutter_v2/data/conversation_data.dart';
 import 'package:studyai_flutter_v2/resusable_components/top_elements.dart';
 
 class GetPremiumPage extends StatefulWidget {
@@ -13,33 +14,39 @@ class GetPremiumPage extends StatefulWidget {
 
 class _GetPremiumPageState extends State<GetPremiumPage> {
   @override
-
   String currentPrice = "";
 
-  void initState() async {
+  void initState() {
     // TODO: implement initState
     super.initState();
+    fetchSubPrice();
+  }
+
+  Future<void> fetchSubPrice() async {
     try {
       Offerings offerings = await Purchases.getOfferings();
       if (offerings.current != null &&
           offerings.current!.availablePackages.isNotEmpty) {
-          final package = offerings.current!.availablePackages.single;
-          final product = package.storeProduct;
-          setState(() {
-            currentPrice = product.priceString;
-          });
+        final package = offerings.current!.availablePackages.single;
+        final product = package.storeProduct;
+        setState(() {
+          currentPrice = product.priceString;
+        });
       }
     } on PlatformException catch (e) {
       // optional error handling
       if (kDebugMode) {
-        print("ERROR FETCHING OFFERINGS. ERROR: " + e.code + " Message: " + e.message.toString() + " Details: " + e.details.toString());
+        print("ERROR FETCHING OFFERINGS. ERROR: " +
+            e.code +
+            " Message: " +
+            e.message.toString() +
+            " Details: " +
+            e.details.toString());
       }
     }
   }
 
-
-  void initializeSubPrice() async
-  {
+  void initializeSubPrice() async {
     Offerings? offerings = await Purchases.getOfferings();
     final package = offerings.current!.availablePackages.single;
     final product = package.storeProduct;
@@ -48,6 +55,25 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
     });
   }
 
+  void purchasePremium() async {
+    Offerings? offerings = await Purchases.getOfferings();
+    final package = offerings.current!.availablePackages.single;
+
+    try {
+      CustomerInfo customerInfo = await Purchases.purchasePackage(package);
+      Data().initalizeSubStatus();
+      if (customerInfo.entitlements.all["Premium"]!.isActive) {
+        // Unlock that great "pro" content
+        Navigator.pop(context);
+        
+      }
+    } on PlatformException catch (e) {
+      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        print("ERROR PURCHASING: " + e.message.toString());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +99,12 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
                 textAlign: TextAlign.center,
               ),
             )),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(bottom: 30, left: 10, right: 10),
               child: Text(
-                "Get Study AI Premium to access longer, more detailed, ad-free responses and be the first to access new features.",
+                "Get Study AI Premium to access longer, more detailed, ad-free responses and be the first to access new features. For only " +
+                    currentPrice +
+                    "/ month.",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
               ),
@@ -85,7 +113,7 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
               padding: const EdgeInsets.only(bottom: 30),
               child: GestureDetector(
                 onTap: () {
-                  print("GOING PRO");
+                  purchasePremium();
                 },
                 child: Container(
                   width: 300,
@@ -105,7 +133,6 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
                 ),
               ),
             ),
-            Text("For only " + currentPrice + "/ month")
           ],
         ),
       ),

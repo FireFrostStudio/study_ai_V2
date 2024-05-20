@@ -32,7 +32,7 @@ class _ConversationTextBuilderState extends State<ConversationTextBuilder> {
                     : Theme.of(context).colorScheme.secondary,
                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                 ),
-                child: Text(
+                child: SelectableText(
                   message.messageContent,
                   textAlign: message.fromUser? TextAlign.right : TextAlign.left,
                   style: message.fromUser ? TextStyle(color: Colors.white, fontSize: 13) : TextStyle(fontSize: 13),

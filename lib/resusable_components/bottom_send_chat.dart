@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:studyai_flutter_v2/resusable_components/text_field_custom.dart';
 import 'package:studyai_flutter_v2/conversation_page_elements/conversation_text_builder.dart';
 import '../conversationPage.dart';
@@ -33,11 +34,53 @@ class _BottomSendChatState extends State<BottomSendChat> {
   final TextEditingController _textEditingController = TextEditingController();
   int? _conversationIndex;
   bool textFieldReadOnly = false;
+
+  InterstitialAd? _interstitialAd;
+
+  void loadAd() {
+    InterstitialAd.load(
+        adUnitId: Data().interstitialAdAndroidID,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          // Called when an ad is successfully received.
+          onAdLoaded: (ad) {
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+                // Called when the ad showed the full screen content.
+                onAdShowedFullScreenContent: (ad) {},
+                // Called when an impression occurs on the ad.
+                onAdImpression: (ad) {},
+                // Called when the ad failed to show full screen content.
+                onAdFailedToShowFullScreenContent: (ad, err) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when the ad dismissed full screen content.
+                onAdDismissedFullScreenContent: (ad) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                  print("Closed");
+                  loadAd();
+                },
+                // Called when a click is recorded for an ad.
+                onAdClicked: (ad) {});
+
+            debugPrint('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            _interstitialAd = ad;
+          },
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('InterstitialAd failed to load: $error');
+          },
+        ));
+  }
+
   @override
   void initState() {
     super.initState();
     _textEditingController.text = widget.preEnteredMessage;
     _conversationIndex = widget.conversationIndex;
+    loadAd();
   }
 
   Future<void> GetResponse(BuildContext context, ChatMessage question) async {
@@ -62,7 +105,9 @@ class _BottomSendChatState extends State<BottomSendChat> {
     final body = jsonEncode({
       'model': 'claude-3-haiku-20240307',
       'max_tokens': 256,
-      'system': 'You are an educational assistant called Study AI. Do not every write a quotation mark or include it in an answer.',
+      'system': Data().isPremium == false
+          ? 'You the free version of an educational assistant called Study AI. Give breif answers and if a question is too complex, end it by saying something like more detail is included in Study AI Premium. As a formatting rule, do not every write a quotation mark or include it in an answer.'
+          : "You are the premium version of an educational assistant called Study AI. Give concise, detailed answers. As a formatting rule, never write a quotation mark in your answer.",
       'messages': [
         {'role': 'user', 'content': question.messageContent}
       ]
@@ -92,7 +137,7 @@ class _BottomSendChatState extends State<BottomSendChat> {
             .pastConversations[_conversationIndex ?? 0]
             .messages
             .add(ChatMessage(fromUser: false, messageContent: output ?? " "));
-        
+
         Data().savePastData();
       } else {
         Data().pastConversations!.pastConversations.add(Conversation(messages: [
@@ -101,7 +146,8 @@ class _BottomSendChatState extends State<BottomSendChat> {
               ChatMessage(fromUser: false, messageContent: output ?? " ")
             ]));
         setState(() {
-          _conversationIndex = Data().pastConversations!.pastConversations.length - 1;
+          _conversationIndex =
+              Data().pastConversations!.pastConversations.length - 1;
         });
         Data().savePastData();
       }
@@ -141,28 +187,28 @@ class _BottomSendChatState extends State<BottomSendChat> {
                                     fontSize: 10, fontWeight: FontWeight.w100),
                               )),
                         ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                                width: 45,
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: const Center(
-                                    child: Padding(
-                                  padding: EdgeInsets.only(top: 5),
-                                  child: ImageIcon(
-                                    AssetImage("assets/icons/camera_icon.png"),
-                                    size: 35,
-                                    color: Colors.white,
-                                  ),
-                                ))),
-                          ),
-                        ),
+                        // GestureDetector(
+                        //   onTap: () {},
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.all(10.0),
+                        //     child: Container(
+                        //         width: 45,
+                        //         height: 45,
+                        //         decoration: BoxDecoration(
+                        //           color: Theme.of(context).colorScheme.primary,
+                        //           borderRadius: BorderRadius.circular(15),
+                        //         ),
+                        //         child: const Center(
+                        //             child: Padding(
+                        //           padding: EdgeInsets.only(top: 5),
+                        //           child: ImageIcon(
+                        //             AssetImage("assets/icons/camera_icon.png"),
+                        //             size: 35,
+                        //             color: Colors.white,
+                        //           ),
+                        //         ))),
+                        //   ),
+                        // ),
                         GestureDetector(
                           onTap: () {
                             sendMessage(context);
@@ -233,8 +279,18 @@ class _BottomSendChatState extends State<BottomSendChat> {
         textFieldReadOnly = true;
       });
     }
+    if (widget.currentConversation?.messages != null) {
+      if (_interstitialAd != null &&
+          Data().isPremium == false &&
+          widget.currentConversation!.messages.length % 3 == 0) {
+        try {
+          _interstitialAd!.show();
+        } catch (e) {
+          print("Error Showing Ad. Code: " + e.toString());
+        }
+      }
+    }
   }
-
 }
 
 String? getTextContent(Map<String, dynamic> responseData) {

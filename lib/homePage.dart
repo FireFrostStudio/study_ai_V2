@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:studyai_flutter_v2/data/conversation_data.dart';
+import 'package:studyai_flutter_v2/getPremiumPage.dart';
 import 'package:studyai_flutter_v2/resusable_components/bottom_send_chat.dart';
 import 'package:studyai_flutter_v2/home_page_elements/middle_home_elements.dart';
 import 'package:studyai_flutter_v2/home_page_elements/question_history_homePage.dart';
@@ -46,55 +49,100 @@ class HomePageDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: ListView(
-          children: [
-            const Text(
-              "Study AI",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
-            ),
-            SizedBox(height: 20,),
-            Container(
-              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(10)),
-              height: 120,
-              child: const Padding(
-                padding: EdgeInsets.all(15),
-                child: Row(
+    return Consumer<Data>(
+        builder: (context, value, child) => Drawer(
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: ListView(
                   children: [
-                    Icon(Icons.star, color: Colors.white,),
-                    SizedBox(width: 20,),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Upgrade To Premium", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.start,),
-                          Text("Get premium and enjoy exclusive features!", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),),
-                        ],
+                    const Text(
+                      "Study AI",
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (value.isPremium == false) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => GetPremiumPage()),
+                          );
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(10)),
+                        height: 120,
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.star,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      value.isPremium == false
+                                          ? "Upgrade To Premium"
+                                          : "Premium Activated",
+                                      style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      value.isPremium == false
+                                          ? "Get premium and enjoy exclusive features!"
+                                          : "Enjoy pro features like longer responses and no ads!",
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Icon(
+                                Icons.arrow_right,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    Icon(Icons.arrow_right, color: Colors.white,),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Divider(
+                        thickness: 1,
+                      ),
+                    ),
+                    const ListTile(
+                      leading: Icon(Icons.book),
+                      title: Text("Terms Of Service"),
+                    ),
+                    const ListTile(
+                      leading: Icon(Icons.privacy_tip),
+                      title: Text("Privacy Policy"),
+                    )
                   ],
                 ),
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Divider(thickness: 1,),
-            ),
-            const ListTile(
-              leading: Icon(Icons.book),
-              title: Text("Terms Of Service"),
-            ),
-            const ListTile(
-              leading: Icon(Icons.privacy_tip),
-              title: Text("Privacy Policy"),
-            )
-          ],
-        ),
-      ),
-    );
+            ));
   }
 }
