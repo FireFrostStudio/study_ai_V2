@@ -26,7 +26,7 @@ class MiddleHomePage extends StatelessWidget {
                 description: "Explore our world-class generative models",
                 onTap: () {
                   Data().initalizeSubStatus();
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) => ConversationPage(
@@ -46,7 +46,7 @@ class MiddleHomePage extends StatelessWidget {
                     "Need answers to complex topics? Study AI can help.",
                 onTap: () {
                   Data().initalizeSubStatus();
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) => ConversationPage(

@@ -16,7 +16,7 @@ class _QuestionHistoryPageState extends State<QuestionHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: const Stack(
+      body: Stack(
         children: [
           SafeArea(
             child: SingleChildScrollView(
@@ -24,19 +24,19 @@ class _QuestionHistoryPageState extends State<QuestionHistoryPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                 TopElements(),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(left: 20, right: 20, top: 15),
                     child: Text(
                       "Question History",
                       style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
                     ),
                   ),
-                  QuestionHistoryExpandedView()
+                  const QuestionHistoryExpandedView()
                 ],
               ),
             ),
           ),
-          QuestionHistoryExpandedBottom()
+          const QuestionHistoryExpandedBottom()
         ],
       ),
     );

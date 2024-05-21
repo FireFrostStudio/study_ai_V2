@@ -81,6 +81,29 @@ class _BottomSendChatState extends State<BottomSendChat> {
     _textEditingController.text = widget.preEnteredMessage;
     _conversationIndex = widget.conversationIndex;
     loadAd();
+    if(widget.isFromHomePage)
+    {
+      setState(() {
+        textFieldReadOnly = false;
+      });
+    }
+      WidgetsBinding.instance
+        .addPostFrameCallback((_) => sendMessageOnStart(context));
+
+    if(widget.isFromHomePage)
+    {
+      print("FROM HOME PAGE");
+    }
+    else
+    {
+      print("NOT FROM HOME PAGE");
+    }
+  }
+
+  void sendMessageOnStart(BuildContext context) {
+    if (widget.autoSendMessage == true && _textEditingController.text != "") {
+      sendMessage(context);
+    }
   }
 
   Future<void> GetResponse(BuildContext context, ChatMessage question) async {
@@ -182,7 +205,6 @@ class _BottomSendChatState extends State<BottomSendChat> {
                               padding: const EdgeInsets.all(8.0),
                               child: CustomTextField(
                                 controller: _textEditingController,
-                                readOnly: textFieldReadOnly,
                                 style: TextStyle(
                                     fontSize: 10, fontWeight: FontWeight.w100),
                               )),
@@ -254,13 +276,16 @@ class _BottomSendChatState extends State<BottomSendChat> {
       if (_textEditingController.text != "") {
         sendRightAway = true;
       }
+      String inputText = _textEditingController.text;
+      _textEditingController.clear();
+      FocusManager.instance.primaryFocus?.unfocus();
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ConversationPage(
                   autoSendMessage: sendRightAway,
                   currentConversation: Conversation(messages: []),
-                  questionInput: _textEditingController.text,
+                  questionInput: inputText,
                 )),
       );
     }

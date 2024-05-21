@@ -38,7 +38,7 @@ class _ConversationPageState extends State<ConversationPage> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const TopElements(),
+                  TopElements(isConversationPage: true,),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
                     child: ConversationTextBuilder(currentConversation: currentConversation,),

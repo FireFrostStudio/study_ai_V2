@@ -25,7 +25,7 @@ class QuestionHistoryExpandedView extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => ConversationPage(
@@ -123,7 +123,7 @@ class _QuestionHistoryHomeViewState extends State<QuestionHistoryHomeView> {
               padding: const EdgeInsets.only(top: 10),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) => ConversationPage(

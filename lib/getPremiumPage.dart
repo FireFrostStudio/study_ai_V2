@@ -82,7 +82,7 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
       body: SafeArea(
         child: Column(
           children: [
-            const TopElements(),
+            TopElements(),
             Spacer(),
             Image.asset(
               "assets/icons/crown_icon.png",

@@ -39,6 +39,7 @@ void main() async {
 
 
   await MobileAds.instance.initialize();
+FocusManager.instance.primaryFocus?.unfocus();
 
   runApp(
     MultiProvider(

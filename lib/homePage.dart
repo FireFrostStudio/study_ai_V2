@@ -1,7 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:studyai_flutter_v2/conversationPage.dart';
 import 'package:studyai_flutter_v2/data/conversation_data.dart';
 import 'package:studyai_flutter_v2/getPremiumPage.dart';
+import 'package:studyai_flutter_v2/questionHistoryPage.dart';
+import 'package:studyai_flutter_v2/question_history_elements/question_history_builder.dart';
 import 'package:studyai_flutter_v2/resusable_components/bottom_send_chat.dart';
 import 'package:studyai_flutter_v2/home_page_elements/middle_home_elements.dart';
 import 'package:studyai_flutter_v2/home_page_elements/question_history_homePage.dart';
@@ -69,7 +75,7 @@ class HomePageDrawer extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => GetPremiumPage()),
+                                builder: (context) => GetPremiumPage()),
                           );
                         }
                       },
@@ -77,7 +83,7 @@ class HomePageDrawer extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(10)),
-                        height: 120,
+                        height: 125,
                         child: Padding(
                           padding: EdgeInsets.all(15),
                           child: Row(
@@ -132,13 +138,47 @@ class HomePageDrawer extends StatelessWidget {
                         thickness: 1,
                       ),
                     ),
-                    const ListTile(
-                      leading: Icon(Icons.book),
-                      title: Text("Terms Of Service"),
+                    ListTile(
+                      onTap: () async {
+                        try {
+                          CustomerInfo customerInfo =
+                              await Purchases.restorePurchases();
+                          // ... check restored purchaserInfo to see if entitlement is now active
+                          Data().initalizeSubStatus();
+                        } on PlatformException catch (e) {
+                          // Error restoring purchases
+                        }
+                      },
+                      leading: const Icon(Icons.monetization_on),
+                      title: const Text("Restore Purchase"),
                     ),
-                    const ListTile(
-                      leading: Icon(Icons.privacy_tip),
-                      title: Text("Privacy Policy"),
+                    Divider(),
+                    ListTile(
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ConversationPage(
+                                    autoSendMessage: false,
+                                    currentConversation:
+                                        Conversation(messages: []),
+                                    questionInput: "",
+                                  )), (Route<dynamic> route) => false
+                        );
+                      },
+                      leading: const Icon(Icons.chat),
+                      title: const Text("Start A Conversation"),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => QuestionHistoryPage()),
+                        );
+                      },
+                      leading: const Icon(Icons.history),
+                      title: const Text("Open History"),
                     )
                   ],
                 ),
