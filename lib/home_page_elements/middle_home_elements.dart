@@ -9,9 +9,9 @@ import '../data/conversation_data.dart';
 
 class MiddleHomePage extends StatelessWidget {
   const MiddleHomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
+    Data data = Data();
     return Column(
       children: [
         //Premium Widget
@@ -19,6 +19,7 @@ class MiddleHomePage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ExamplePrompt_Widget_HomePage(
                 iconPath: "assets/icons/pencil_icon.png",
@@ -38,7 +39,7 @@ class MiddleHomePage extends StatelessWidget {
                   );
                 },
               ),
-              Spacer(),
+              SizedBox(width: 10,),
               ExamplePrompt_Widget_HomePage(
                 iconPath: "assets/icons/math_icon.png",
                 title: "Math Help",
@@ -60,7 +61,9 @@ class MiddleHomePage extends StatelessWidget {
               )
             ],
           ),
-        )
+        ),
+        if(data.isPremium == false)
+        Take_Pictures_With_StudyAI()
       ],
     );
   }
@@ -191,7 +194,7 @@ class Premium_Widget_HomePage extends StatelessWidget {
                             const Spacer(),
                             value.isPremium == false
                                 ? const Text(
-                                    "Remove ads, get longer responses, and more!")
+                                    "Send pictures, remove ads, get longer responses, and more!")
                                 : const Text(
                                     "Enjoy longer, more detailed responses, ad free!"),
                             const Spacer(),
@@ -256,6 +259,62 @@ class Premium_Widget_HomePage extends StatelessWidget {
                           width: 100,
                           child: Image.asset(
                             value.isPremium == false ? "assets/icons/bulb-dynamic-color.png" : "assets/icons/crown_icon.png",
+                            fit: BoxFit.contain,
+                          ))
+                    ],
+                  ),
+                ),
+              ),
+            ));
+  }
+}
+
+class Take_Pictures_With_StudyAI extends StatelessWidget {
+  const Take_Pictures_With_StudyAI({
+    super.key,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<Data>(
+        builder: (context, value, child) => Padding(
+              padding: const EdgeInsets.all(20),
+              child: Container(
+                width: double.infinity,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Colors.purple.shade200,
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Spacer(),
+                                Text("Send Pictures With Study AI Premium",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold)),
+                                        Spacer()
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Image.asset(
+                            value.isPremium == false ? "assets/icons/camera-dynamic-premium.png" : "assets/icons/crown_icon.png",
                             fit: BoxFit.contain,
                           ))
                     ],

@@ -56,8 +56,13 @@ class _ConversationPageState extends State<ConversationPage> {
 
  void updateConversation(ChatMessage newMessage)
   {
+    try {
       setState(() {
         currentConversation.messages.add(newMessage);
       });
+    // ignore: empty_catches
+    } catch (e) {
+      
+    }
   }
 }

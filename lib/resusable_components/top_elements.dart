@@ -24,8 +24,10 @@ class TopElements extends StatelessWidget {
                 if (isConversationPage == false) {
                   Navigator.pop(context);
                 } else {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const HomePage()));
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false);
                 }
               },
               child: Container(

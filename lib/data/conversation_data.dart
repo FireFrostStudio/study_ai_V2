@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,19 +15,26 @@ class Data extends ChangeNotifier {
 
   PastConversations? pastConversations;
   bool isPremium = false;
-
-  final interstitialAdAndroidID = "ca-app-pub-3940256099942544/1033173712";
+  XFile? pictureTaken;
+  final interstitialAdAndroidID = "ca-app-pub-7964234257494740/3516289080";
 
   Future<void> initalizeSubStatus() async {
-    CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-    isPremium = customerInfo.entitlements.all["Premium"]?.isActive ?? false;
+    if(Platform.isAndroid)
+    {
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      isPremium = customerInfo.entitlements.all["Premium"]?.isActive ?? false;
+    }
+    // ADD CODE HERE FOR APPLE
     notifyListeners();
   }
 
   Future<void> loadPastData() async {
     pastConversations = await retrievePastConversations();
-    print("Data Retreived. Count: " +
-        pastConversations!.pastConversations.length.toString());
+  }
+
+  void deletePicture()
+  {
+    pictureTaken = null;
   }
 
   Future<void> savePastData() async {
@@ -49,7 +58,6 @@ class Data extends ChangeNotifier {
 class ChatMessage {
   bool fromUser;
   String messageContent;
-
   ChatMessage({required this.fromUser, required this.messageContent});
 }
 
@@ -87,18 +95,31 @@ Future<PastConversations> retrievePastConversations() async {
   if (conversationsJson.isEmpty) {
     return PastConversations(pastConversations: []);
   }
-  List<Conversation> conversations = conversationsJson.map((conversationJson) {
-    String sanitizedJson =
-        conversationJson.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    Map<String, dynamic> conversationMap = jsonDecode(sanitizedJson);
-    List<ChatMessage> chat_messages =
-        conversationMap['messages'].map<ChatMessage>((messageJson) {
-      Map<String, dynamic> messageMap = messageJson;
-      return ChatMessage(
-          fromUser: messageMap['fromUser'],
-          messageContent: messageMap['messageContent']);
-    }).toList();
-    return Conversation(messages: chat_messages);
-  }).toList();
+  List<Conversation> conversations = conversationsJson
+      .map((conversationJson) {
+        String sanitizedJson =
+            conversationJson.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+        Map<String, dynamic>? conversationMap;
+        try {
+          conversationMap = jsonDecode(sanitizedJson);
+        } catch (e) {
+          print("Error Loading Data: " + e.toString());
+          return null; // return null if conversationMap is null
+        }
+        if (conversationMap != null) {
+          List<ChatMessage> chat_messages =
+              conversationMap['messages'].map<ChatMessage>((messageJson) {
+            Map<String, dynamic> messageMap = messageJson;
+            return ChatMessage(
+                fromUser: messageMap['fromUser'],
+                messageContent: messageMap['messageContent']);
+          }).toList();
+          return Conversation(messages: chat_messages);
+        }
+        return null; // return null if conversationMap is null
+      })
+      .where((conversation) => conversation != null)
+      .cast<Conversation>()
+      .toList();
   return PastConversations(pastConversations: conversations);
 }

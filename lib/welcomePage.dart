@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studyai_flutter_v2/themes/theme_provider.dart';
 import 'package:lottie/lottie.dart';
-import 'package:vibration/vibration.dart';
 
 import 'homePage.dart';
 
@@ -36,7 +36,6 @@ class WelcomePage extends StatelessWidget {
                       onTap: () {
                         Provider.of<ThemeProvider>(context, listen: false)
                             .toggelTheme();
-                        Vibration.vibrate();
                       },
                       child: Container(
                         width: 45,
@@ -77,7 +76,9 @@ class WelcomePage extends StatelessWidget {
               ),
               Spacer(),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool("hasSeenIntro", true);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studyai_flutter_v2/data/conversation_data.dart';
 import 'package:studyai_flutter_v2/homePage.dart';
 import 'package:studyai_flutter_v2/themes/theme_provider.dart';
@@ -39,7 +41,27 @@ void main() async {
 
 
   await MobileAds.instance.initialize();
-FocusManager.instance.primaryFocus?.unfocus();
+  FocusManager.instance.primaryFocus?.unfocus();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  // bool hasSeenIntro = prefs.getBool("hasSeenIntro") ?? false;
+  bool hasSeenIntro = false;
+  final ImagePicker picker = ImagePicker();
+  LostDataResponse response = LostDataResponse.empty();
+  try {
+      response = await picker.retrieveLostData();
+  } catch (e) {
+    
+  }
+
+  if(response.isEmpty == false)
+  {
+      final List<XFile>? files = response.files;
+      if(files!= null)
+      {
+        Data data = Data();
+        data.pictureTaken = files.first;
+      }
+  }
 
   runApp(
     MultiProvider(
@@ -51,19 +73,20 @@ FocusManager.instance.primaryFocus?.unfocus();
           create: (_) => themeProvider,
         ),
       ],
-      child: MyApp(),
+      child: MyApp(hasSeenIntro: hasSeenIntro,),
     ),
   );
 }
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasSeenIntro;
+  const MyApp({super.key, required this.hasSeenIntro});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const WelcomePage(),
+      home: hasSeenIntro == false ? const WelcomePage() : const HomePage(),
       theme: Provider.of<ThemeProvider>(context).themeData
     );
   }

@@ -114,7 +114,7 @@ class HomePageDrawer extends StatelessWidget {
                                     Text(
                                       value.isPremium == false
                                           ? "Get premium and enjoy exclusive features!"
-                                          : "Enjoy pro features like longer responses and no ads!",
+                                          : "Enjoy pro features like sending picutres, longer responses and no ads!",
                                       style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
@@ -169,17 +169,6 @@ class HomePageDrawer extends StatelessWidget {
                       leading: const Icon(Icons.chat),
                       title: const Text("Start A Conversation"),
                     ),
-                    ListTile(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => QuestionHistoryPage()),
-                        );
-                      },
-                      leading: const Icon(Icons.history),
-                      title: const Text("Open History"),
-                    )
                   ],
                 ),
               ),

@@ -102,7 +102,7 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
             Padding(
               padding: EdgeInsets.only(bottom: 30, left: 10, right: 10),
               child: Text(
-                "Get Study AI Premium to access longer, more detailed, ad-free responses and be the first to access new features. For only " +
+                "Get Study AI Premium to send pictures, access longer, more detailed, ad-free responses and be the first to access new features. For only " +
                     currentPrice +
                     "/ month.",
                 textAlign: TextAlign.center,
