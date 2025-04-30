@@ -3,6 +3,7 @@
 An AI assistant helper made specifically to assist students. 
 
 ## Screenshots
+View on Google Play: https://play.google.com/store/apps/details?id=com.studyaiinc.studyai&hl=en_CA
 
 ![image](https://github.com/user-attachments/assets/a37efd48-ab9b-4553-93e9-0bc13ba6d157)
 ![image](https://github.com/user-attachments/assets/6f5d788f-2077-4537-b0f6-fb67f1aee24c)
