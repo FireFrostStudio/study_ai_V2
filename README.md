@@ -1,16 +1,11 @@
-# studyai_flutter_v2
+# Study AI
 
-A new Flutter project.
+An AI assistant helper made specifically to assist students. 
 
-## Getting Started
+## Screenshots
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![image](https://github.com/user-attachments/assets/a37efd48-ab9b-4553-93e9-0bc13ba6d157)
+![image](https://github.com/user-attachments/assets/6f5d788f-2077-4537-b0f6-fb67f1aee24c)
+![image](https://github.com/user-attachments/assets/68a42efe-139a-41de-a88c-1f68c80283c3)
+![image](https://github.com/user-attachments/assets/55fd9623-611f-40c8-a690-aa2f6e303142)
+![image](https://github.com/user-attachments/assets/ddb67375-ea05-440f-944f-217eee95156e)
